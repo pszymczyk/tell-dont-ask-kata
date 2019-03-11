@@ -1,18 +1,14 @@
 package com.pszymczyk.telldontaskkata.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 
 import com.pszymczyk.telldontaskkata.entity.Order;
 import com.pszymczyk.telldontaskkata.entity.OrderFactory;
 import com.pszymczyk.telldontaskkata.entity.OrderItem;
-import com.pszymczyk.telldontaskkata.entity.OrderStatus;
+import com.pszymczyk.telldontaskkata.entity.OrderItemFactory;
 import com.pszymczyk.telldontaskkata.entity.Product;
 import com.pszymczyk.telldontaskkata.repository.OrderRepository;
 import com.pszymczyk.telldontaskkata.repository.ProductCatalog;
-
-import static java.math.BigDecimal.valueOf;
-import static java.math.RoundingMode.HALF_UP;
 
 class CreateOrderFeature {
 
@@ -29,25 +25,10 @@ class CreateOrderFeature {
 
         for (SellItemRequest itemRequest : request.getRequests()) {
             Product product = productCatalog.getByName(itemRequest.getProductName());
-
-            final BigDecimal unitaryTax = product.getPrice()
-                                                 .divide(valueOf(100))
-                                                 .multiply(product.getCategory().getTaxPercentage())
-                                                 .setScale(2, HALF_UP);
-            final BigDecimal unitaryTaxedAmount = product.getPrice().add(unitaryTax).setScale(2, HALF_UP);
-            final BigDecimal taxedAmount = unitaryTaxedAmount.multiply(valueOf(itemRequest.getQuantity()))
-                                                             .setScale(2, HALF_UP);
-            final BigDecimal taxAmount = unitaryTax.multiply(valueOf(itemRequest.getQuantity()));
-
-            final OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(product);
-            orderItem.setQuantity(itemRequest.getQuantity());
-            orderItem.setTax(taxAmount);
-            orderItem.setTaxedAmount(taxedAmount);
-            order.getItems().add(orderItem);
-
-            order.setTotal(order.getTotal().add(taxedAmount));
-            order.setTax(order.getTax().add(taxAmount));
+            final BigDecimal taxedAmount = product.taxedAmount(itemRequest.getQuantity());
+            final BigDecimal taxAmount = product.taxAmount(itemRequest.getQuantity());
+            final OrderItem orderItem = OrderItemFactory.create(product, itemRequest.getQuantity());
+            order.addItem(orderItem, taxedAmount, taxAmount);
         }
 
         orderRepository.save(order);
