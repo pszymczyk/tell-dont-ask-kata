@@ -11,6 +11,14 @@ public class Order {
     private OrderStatus status;
     private int id;
 
+    Order(BigDecimal total, String currency, List<OrderItem> items, BigDecimal tax, OrderStatus status) {
+        this.total = total;
+        this.currency = currency;
+        this.items = items;
+        this.tax = tax;
+        this.status = status;
+    }
+
     public BigDecimal getTotal() {
         return total;
     }

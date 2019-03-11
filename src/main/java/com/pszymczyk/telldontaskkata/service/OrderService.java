@@ -17,11 +17,11 @@ public class OrderService {
     }
 
     public void approveOrder(OrderApprovalRequest request) {
-        approveOrderFeature.invoke(request);
+        approveOrderFeature.approve(request);
     }
 
     public void createOrder(SellItemsRequest request) {
-        createOrderFeature.invoke(request);
+        createOrderFeature.create(request);
     }
 
     public void shipOrder(OrderShipmentRequest request) {

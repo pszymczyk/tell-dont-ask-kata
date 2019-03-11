@@ -12,7 +12,7 @@ class ApproveOrderFeature {
         this.orderRepository = orderRepository;
     }
 
-    void invoke(OrderApprovalRequest request) {
+    void approve(OrderApprovalRequest request) {
         final Order order = orderRepository.getById(request.getOrderId());
 
         if (order.getStatus().equals(OrderStatus.SHIPPED)) {
