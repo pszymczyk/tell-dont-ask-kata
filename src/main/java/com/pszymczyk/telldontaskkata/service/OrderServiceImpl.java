@@ -9,6 +9,7 @@ import com.pszymczyk.telldontaskkata.entity.OrderStatus;
 import com.pszymczyk.telldontaskkata.entity.Product;
 import com.pszymczyk.telldontaskkata.repository.OrderRepository;
 import com.pszymczyk.telldontaskkata.repository.ProductCatalog;
+import com.pszymczyk.telldontaskkata.util.ShipmentServiceUtil;
 
 import static com.pszymczyk.telldontaskkata.entity.OrderStatus.CREATED;
 import static com.pszymczyk.telldontaskkata.entity.OrderStatus.REJECTED;
@@ -20,12 +21,12 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductCatalog productCatalog;
-    private final ShipmentService shipmentService;
+    private final ShipmentServiceUtil shipmentServiceUtil;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ProductCatalog productCatalog, ShipmentService shipmentService) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductCatalog productCatalog, ShipmentServiceUtil shipmentServiceUtil) {
         this.orderRepository = orderRepository;
         this.productCatalog = productCatalog;
-        this.shipmentService = shipmentService;
+        this.shipmentServiceUtil = shipmentServiceUtil;
     }
 
     @Override
@@ -99,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderCannotBeShippedTwiceException();
         }
 
-        shipmentService.ship(order);
+        shipmentServiceUtil.ship(order);
 
         order.setStatus(OrderStatus.SHIPPED);
         orderRepository.save(order);

@@ -27,10 +27,8 @@ import com.pszymczyk.telldontaskkata.service.SellItemsRequest;
 import com.pszymczyk.telldontaskkata.service.ShippedOrdersCannotBeChangedException;
 import com.pszymczyk.telldontaskkata.service.UnknownProductException;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class OrderServiceTest {
 
@@ -58,6 +56,7 @@ public class OrderServiceTest {
 
     @Test
     public void sellMultipleItems() {
+        //given
         SellItemRequest saladRequest = new SellItemRequest();
         saladRequest.setProductName("salad");
         saladRequest.setQuantity(2);
@@ -66,44 +65,52 @@ public class OrderServiceTest {
         tomatoRequest.setProductName("tomato");
         tomatoRequest.setQuantity(3);
 
-        final SellItemsRequest request = new SellItemsRequest();
+        SellItemsRequest request = new SellItemsRequest();
         request.setRequests(new ArrayList<>());
         request.getRequests().add(saladRequest);
         request.getRequests().add(tomatoRequest);
 
+        //when
         orderService.createOrder(request);
 
-        final Order insertedOrder = orderRepository.getSavedOrder();
-        assertThat(insertedOrder.getStatus(), is(OrderStatus.CREATED));
-        assertThat(insertedOrder.getTotal(), is(new BigDecimal("23.20")));
-        assertThat(insertedOrder.getTax(), is(new BigDecimal("2.13")));
-        assertThat(insertedOrder.getCurrency(), is("EUR"));
-        assertThat(insertedOrder.getItems(), hasSize(2));
-        assertThat(insertedOrder.getItems().get(0).getProduct().getName(), is("salad"));
-        assertThat(insertedOrder.getItems().get(0).getProduct().getPrice(), is(new BigDecimal("3.56")));
-        assertThat(insertedOrder.getItems().get(0).getQuantity(), is(2));
-        assertThat(insertedOrder.getItems().get(0).getTaxedAmount(), is(new BigDecimal("7.84")));
-        assertThat(insertedOrder.getItems().get(0).getTax(), is(new BigDecimal("0.72")));
-        assertThat(insertedOrder.getItems().get(1).getProduct().getName(), is("tomato"));
-        assertThat(insertedOrder.getItems().get(1).getProduct().getPrice(), is(new BigDecimal("4.65")));
-        assertThat(insertedOrder.getItems().get(1).getQuantity(), is(3));
-        assertThat(insertedOrder.getItems().get(1).getTaxedAmount(), is(new BigDecimal("15.36")));
-        assertThat(insertedOrder.getItems().get(1).getTax(), is(new BigDecimal("1.41")));
+        //then
+        Order insertedOrder = orderRepository.getSavedOrder();
+        assertThat(insertedOrder.getStatus()).isEqualTo(OrderStatus.CREATED);
+        assertThat(insertedOrder.getTotal()).isEqualTo(new BigDecimal("23.20"));
+        assertThat(insertedOrder.getTax()).isEqualTo(new BigDecimal("2.13"));
+        assertThat(insertedOrder.getCurrency()).isEqualTo("EUR");
+        assertThat(insertedOrder.getItems()).hasSize(2);
+        assertThat(insertedOrder.getItems().get(0).getProduct().getName()).isEqualTo("salad");
+        assertThat(insertedOrder.getItems().get(0).getProduct().getPrice()).isEqualTo(new BigDecimal("3.56"));
+        assertThat(insertedOrder.getItems().get(0).getQuantity()).isEqualTo(2);
+        assertThat(insertedOrder.getItems().get(0).getTaxedAmount()).isEqualTo(new BigDecimal("7.84"));
+        assertThat(insertedOrder.getItems().get(0).getTax()).isEqualTo(new BigDecimal("0.72"));
+        assertThat(insertedOrder.getItems().get(1).getProduct().getName()).isEqualTo("tomato");
+        assertThat(insertedOrder.getItems().get(1).getProduct().getPrice()).isEqualTo(new BigDecimal("4.65"));
+        assertThat(insertedOrder.getItems().get(1).getQuantity()).isEqualTo(3);
+        assertThat(insertedOrder.getItems().get(1).getTaxedAmount()).isEqualTo(new BigDecimal("15.36"));
+        assertThat(insertedOrder.getItems().get(1).getTax()).isEqualTo(new BigDecimal("1.41"));
     }
 
-    @Test(expected = UnknownProductException.class)
+    @Test
     public void unknownProduct() {
+        //given
         SellItemsRequest request = new SellItemsRequest();
         request.setRequests(new ArrayList<>());
         SellItemRequest unknownProductRequest = new SellItemRequest();
         unknownProductRequest.setProductName("unknown product");
         request.getRequests().add(unknownProductRequest);
 
-        orderService.createOrder(request);
+        //when
+        Throwable exception = catchThrowable(() -> orderService.createOrder(request));
+
+        //then
+        assertThat(exception).isInstanceOf(UnknownProductException.class);
     }
 
     @Test
     public void approvedExistingOrder() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.CREATED);
         initialOrder.setId(1);
@@ -113,14 +120,17 @@ public class OrderServiceTest {
         request.setOrderId(1);
         request.setApproved(true);
 
+        //when
         orderService.approveOrder(request);
 
-        final Order savedOrder = orderRepository.getSavedOrder();
-        assertThat(savedOrder.getStatus(), is(OrderStatus.APPROVED));
+        //then
+        Order savedOrder = orderRepository.getSavedOrder();
+        assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.APPROVED);
     }
 
     @Test
     public void rejectedExistingOrder() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.CREATED);
         initialOrder.setId(1);
@@ -130,14 +140,17 @@ public class OrderServiceTest {
         request.setOrderId(1);
         request.setApproved(false);
 
+        //when
         orderService.approveOrder(request);
 
-        final Order savedOrder = orderRepository.getSavedOrder();
-        assertThat(savedOrder.getStatus(), is(OrderStatus.REJECTED));
+        //then
+        Order savedOrder = orderRepository.getSavedOrder();
+        assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.REJECTED);
     }
 
-    @Test(expected = RejectedOrderCannotBeApprovedException.class)
+    @Test
     public void cannotApproveRejectedOrder() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.REJECTED);
         initialOrder.setId(1);
@@ -147,13 +160,16 @@ public class OrderServiceTest {
         request.setOrderId(1);
         request.setApproved(true);
 
-        orderService.approveOrder(request);
+        //when
+        Throwable thrown = catchThrowable(() -> orderService.approveOrder(request));
 
-        assertThat(orderRepository.getSavedOrder(), is(nullValue()));
+        //then
+        assertThat(thrown).isInstanceOf(RejectedOrderCannotBeApprovedException.class);
     }
 
-    @Test(expected = ApprovedOrderCannotBeRejectedException.class)
+    @Test
     public void cannotRejectApprovedOrder() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.APPROVED);
         initialOrder.setId(1);
@@ -163,13 +179,16 @@ public class OrderServiceTest {
         request.setOrderId(1);
         request.setApproved(false);
 
-        orderService.approveOrder(request);
+        //when
+        Throwable thrown = catchThrowable(() -> orderService.approveOrder(request));
 
-        assertThat(orderRepository.getSavedOrder(), is(nullValue()));
+        //then
+        assertThat(thrown).isInstanceOf(ApprovedOrderCannotBeRejectedException.class);
     }
 
-    @Test(expected = ShippedOrdersCannotBeChangedException.class)
+    @Test
     public void shippedOrdersCannotBeApproved() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.SHIPPED);
         initialOrder.setId(1);
@@ -179,13 +198,16 @@ public class OrderServiceTest {
         request.setOrderId(1);
         request.setApproved(true);
 
-        orderService.approveOrder(request);
+        //when
+        Throwable thrown = catchThrowable(() -> orderService.approveOrder(request));
 
-        assertThat(orderRepository.getSavedOrder(), is(nullValue()));
+        //then
+        assertThat(thrown).isInstanceOf(ShippedOrdersCannotBeChangedException.class);
     }
 
-    @Test(expected = ShippedOrdersCannotBeChangedException.class)
+    @Test
     public void shippedOrdersCannotBeRejected() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.SHIPPED);
         initialOrder.setId(1);
@@ -195,13 +217,16 @@ public class OrderServiceTest {
         request.setOrderId(1);
         request.setApproved(false);
 
-        orderService.approveOrder(request);
+        //when
+        Throwable thrown = catchThrowable(() -> orderService.approveOrder(request));
 
-        assertThat(orderRepository.getSavedOrder(), is(nullValue()));
+        //then
+        assertThat(thrown).isInstanceOf(ShippedOrdersCannotBeChangedException.class);
     }
 
     @Test
     public void shipApprovedOrder() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setId(1);
         initialOrder.setStatus(OrderStatus.APPROVED);
@@ -210,14 +235,17 @@ public class OrderServiceTest {
         OrderShipmentRequest request = new OrderShipmentRequest();
         request.setOrderId(1);
 
+        //when
         orderService.shipOrder(request);
 
-        assertThat(orderRepository.getSavedOrder().getStatus(), is(OrderStatus.SHIPPED));
-        assertThat(shipmentService.getShippedOrder(), is(initialOrder));
+        //then
+        assertThat(orderRepository.getSavedOrder().getStatus()).isEqualTo((OrderStatus.SHIPPED));
+        assertThat(shipmentService.getShippedOrder()).isEqualTo(initialOrder);
     }
 
-    @Test(expected = OrderCannotBeShippedException.class)
+    @Test
     public void createdOrdersCannotBeShipped() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setId(1);
         initialOrder.setStatus(OrderStatus.CREATED);
@@ -226,14 +254,16 @@ public class OrderServiceTest {
         OrderShipmentRequest request = new OrderShipmentRequest();
         request.setOrderId(1);
 
-        orderService.shipOrder(request);
+        //when
+        Throwable thrown = catchThrowable(() -> orderService.shipOrder(request));
 
-        assertThat(orderRepository.getSavedOrder(), is(nullValue()));
-        assertThat(shipmentService.getShippedOrder(), is(nullValue()));
+        //then
+        assertThat(thrown).isInstanceOf(OrderCannotBeShippedException.class);
     }
 
-    @Test(expected = OrderCannotBeShippedException.class)
+    @Test
     public void rejectedOrdersCannotBeShipped() {
+        //given
         Order initialOrder = new Order();
         initialOrder.setId(1);
         initialOrder.setStatus(OrderStatus.REJECTED);
@@ -242,13 +272,14 @@ public class OrderServiceTest {
         OrderShipmentRequest request = new OrderShipmentRequest();
         request.setOrderId(1);
 
-        orderService.shipOrder(request);
+        //when
+        Throwable thrown = catchThrowable(() -> orderService.shipOrder(request));
 
-        assertThat(orderRepository.getSavedOrder(), is(nullValue()));
-        assertThat(shipmentService.getShippedOrder(), is(nullValue()));
+        //then
+        assertThat(thrown).isInstanceOf(OrderCannotBeShippedException.class);
     }
 
-    @Test(expected = OrderCannotBeShippedTwiceException.class)
+    @Test
     public void shippedOrdersCannotBeShippedAgain() {
         Order initialOrder = new Order();
         initialOrder.setId(1);
@@ -258,9 +289,10 @@ public class OrderServiceTest {
         OrderShipmentRequest request = new OrderShipmentRequest();
         request.setOrderId(1);
 
-        orderService.shipOrder(request);
+        //when
+        Throwable thrown = catchThrowable(() -> orderService.shipOrder(request));
 
-        assertThat(orderRepository.getSavedOrder(), is(nullValue()));
-        assertThat(shipmentService.getShippedOrder(), is(nullValue()));
+        //then
+        assertThat(thrown).isInstanceOf(OrderCannotBeShippedTwiceException.class);
     }
 }

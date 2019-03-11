@@ -1,9 +1,9 @@
 package com.pszymczyk.telldontaskkata.doubles;
 
 import com.pszymczyk.telldontaskkata.entity.Order;
-import com.pszymczyk.telldontaskkata.service.ShipmentService;
+import com.pszymczyk.telldontaskkata.util.ShipmentServiceUtil;
 
-public class TestShipmentService implements ShipmentService {
+public class TestShipmentService implements ShipmentServiceUtil {
     private Order shippedOrder = null;
 
     public Order getShippedOrder() {

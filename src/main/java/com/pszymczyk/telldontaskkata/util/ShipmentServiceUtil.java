@@ -1,7 +1,7 @@
-package com.pszymczyk.telldontaskkata.service;
+package com.pszymczyk.telldontaskkata.util;
 
 import com.pszymczyk.telldontaskkata.entity.Order;
 
-public interface ShipmentService {
+public interface ShipmentServiceUtil {
     void ship(Order order);
 }
