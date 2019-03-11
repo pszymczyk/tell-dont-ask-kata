@@ -6,25 +6,25 @@ import com.pszymczyk.telldontaskkata.util.ShipmentServiceUtil;
 
 public class OrderService {
 
-    private final OrderRepository orderRepository;
-    private final ProductCatalog productCatalog;
-    private final ShipmentServiceUtil shipmentServiceUtil;
+    private final ApproveOrderFeature approveOrderFeature;
+    private final CreateOrderFeature createOrderFeature;
+    private final ShipOrderFeature shipOrderFeature;
 
     public OrderService(OrderRepository orderRepository, ProductCatalog productCatalog, ShipmentServiceUtil shipmentServiceUtil) {
-        this.orderRepository = orderRepository;
-        this.productCatalog = productCatalog;
-        this.shipmentServiceUtil = shipmentServiceUtil;
+        this.approveOrderFeature = new ApproveOrderFeature(orderRepository);
+        this.createOrderFeature = new CreateOrderFeature(productCatalog, orderRepository);
+        this.shipOrderFeature = new ShipOrderFeature(orderRepository, shipmentServiceUtil);
     }
 
     public void approveOrder(OrderApprovalRequest request) {
-        new ApproveOrderFeature(orderRepository).invoke(request);
+        approveOrderFeature.invoke(request);
     }
 
     public void createOrder(SellItemsRequest request) {
-        new CreateOrderFeature(productCatalog, orderRepository).invoke(request);
+        createOrderFeature.invoke(request);
     }
 
     public void shipOrder(OrderShipmentRequest request) {
-        new ShipOrderFeature(orderRepository, shipmentServiceUtil).ship(request);
+        shipOrderFeature.ship(request);
     }
 }
