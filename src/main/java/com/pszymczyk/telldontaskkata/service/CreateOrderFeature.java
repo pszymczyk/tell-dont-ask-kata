@@ -1,7 +1,5 @@
 package com.pszymczyk.telldontaskkata.service;
 
-import java.math.BigDecimal;
-
 import com.pszymczyk.telldontaskkata.entity.Order;
 import com.pszymczyk.telldontaskkata.entity.OrderFactory;
 import com.pszymczyk.telldontaskkata.entity.OrderItem;
@@ -25,10 +23,8 @@ class CreateOrderFeature {
 
         for (SellItemRequest itemRequest : request.getRequests()) {
             Product product = productCatalog.getByName(itemRequest.getProductName());
-            final BigDecimal taxedAmount = product.taxedAmount(itemRequest.getQuantity());
-            final BigDecimal taxAmount = product.taxAmount(itemRequest.getQuantity());
-            final OrderItem orderItem = OrderItemFactory.create(product, itemRequest.getQuantity());
-            order.addItem(orderItem, taxedAmount, taxAmount);
+            OrderItem orderItem = OrderItemFactory.create(product, itemRequest.getQuantity());
+            order.addItem(orderItem);
         }
 
         orderRepository.save(order);
