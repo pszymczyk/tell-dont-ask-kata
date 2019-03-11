@@ -1,7 +1,6 @@
 package com.pszymczyk.telldontaskkata.service;
 
 import com.pszymczyk.telldontaskkata.entity.Order;
-import com.pszymczyk.telldontaskkata.entity.OrderStatus;
 import com.pszymczyk.telldontaskkata.repository.OrderRepository;
 
 class ApproveOrderFeature {
@@ -27,7 +26,7 @@ class ApproveOrderFeature {
             throw new ApprovedOrderCannotBeRejectedException();
         }
 
-        order.setStatus(request.isApproved() ? OrderStatus.APPROVED : OrderStatus.REJECTED);
-        orderRepository.save(order);
+        Order newOrder = order.apply(request);
+        orderRepository.save(newOrder);
     }
 }

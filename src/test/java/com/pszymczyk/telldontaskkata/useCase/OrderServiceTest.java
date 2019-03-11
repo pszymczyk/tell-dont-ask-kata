@@ -12,7 +12,6 @@ import com.pszymczyk.telldontaskkata.doubles.TestShipmentService;
 import com.pszymczyk.telldontaskkata.entity.Category;
 import com.pszymczyk.telldontaskkata.entity.Order;
 import com.pszymczyk.telldontaskkata.entity.OrderFactory;
-import com.pszymczyk.telldontaskkata.entity.OrderStatus;
 import com.pszymczyk.telldontaskkata.entity.Product;
 import com.pszymczyk.telldontaskkata.repository.ProductCatalog;
 import com.pszymczyk.telldontaskkata.service.ApprovedOrderCannotBeRejectedException;
@@ -112,7 +111,6 @@ public class OrderServiceTest {
     public void approvedExistingOrder() {
         //given
         Order initialOrder = OrderFactory.create();
-        initialOrder.setStatus(OrderStatus.CREATED);
         initialOrder.setId(1);
         orderRepository.addOrder(initialOrder);
 
@@ -132,7 +130,6 @@ public class OrderServiceTest {
     public void rejectedExistingOrder() {
         //given
         Order initialOrder = OrderFactory.create();
-        initialOrder.setStatus(OrderStatus.CREATED);
         initialOrder.setId(1);
         orderRepository.addOrder(initialOrder);
 
@@ -152,9 +149,9 @@ public class OrderServiceTest {
     public void cannotApproveRejectedOrder() {
         //given
         Order initialOrder = OrderFactory.create();
-        initialOrder.setStatus(OrderStatus.REJECTED);
-        initialOrder.setId(1);
-        orderRepository.addOrder(initialOrder);
+        Order rejectedOrder = initialOrder.reject();
+        rejectedOrder.setId(1);
+        orderRepository.addOrder(rejectedOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
         request.setOrderId(1);
@@ -171,9 +168,9 @@ public class OrderServiceTest {
     public void cannotRejectApprovedOrder() {
         //given
         Order initialOrder = OrderFactory.create();
-        initialOrder.setStatus(OrderStatus.APPROVED);
-        initialOrder.setId(1);
-        orderRepository.addOrder(initialOrder);
+        Order approvedOrder = initialOrder.approve();
+        approvedOrder.setId(1);
+        orderRepository.addOrder(approvedOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
         request.setOrderId(1);
@@ -190,9 +187,9 @@ public class OrderServiceTest {
     public void shippedOrdersCannotBeApproved() {
         //given
         Order initialOrder = OrderFactory.create();
-        initialOrder.setStatus(OrderStatus.SHIPPED);
-        initialOrder.setId(1);
-        orderRepository.addOrder(initialOrder);
+        Order shippedOrder = initialOrder.ship();
+        shippedOrder.setId(1);
+        orderRepository.addOrder(shippedOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
         request.setOrderId(1);
@@ -209,9 +206,9 @@ public class OrderServiceTest {
     public void shippedOrdersCannotBeRejected() {
         //given
         Order initialOrder = OrderFactory.create();
-        initialOrder.setStatus(OrderStatus.SHIPPED);
-        initialOrder.setId(1);
-        orderRepository.addOrder(initialOrder);
+        Order shippedOrder = initialOrder.ship();
+        shippedOrder.setId(1);
+        orderRepository.addOrder(shippedOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
         request.setOrderId(1);
@@ -229,8 +226,8 @@ public class OrderServiceTest {
         //given
         Order initialOrder = OrderFactory.create();
         initialOrder.setId(1);
-        initialOrder.setStatus(OrderStatus.APPROVED);
-        orderRepository.addOrder(initialOrder);
+        Order approvedOrder = initialOrder.approve();
+        orderRepository.addOrder(approvedOrder);
 
         OrderShipmentRequest request = new OrderShipmentRequest();
         request.setOrderId(1);
@@ -240,7 +237,7 @@ public class OrderServiceTest {
 
         //then
         assertThat(orderRepository.getSavedOrder().isShipped()).isTrue();
-        assertThat(shipmentService.getShippedOrder()).isEqualTo(initialOrder);
+        assertThat(shipmentService.getShippedOrder().getId()).isEqualTo(initialOrder.getId());
     }
 
     @Test
@@ -248,7 +245,6 @@ public class OrderServiceTest {
         //given
         Order initialOrder = OrderFactory.create();
         initialOrder.setId(1);
-        initialOrder.setStatus(OrderStatus.CREATED);
         orderRepository.addOrder(initialOrder);
 
         OrderShipmentRequest request = new OrderShipmentRequest();
@@ -266,8 +262,8 @@ public class OrderServiceTest {
         //given
         Order initialOrder = OrderFactory.create();
         initialOrder.setId(1);
-        initialOrder.setStatus(OrderStatus.REJECTED);
-        orderRepository.addOrder(initialOrder);
+        Order rejectedOrder = initialOrder.reject();
+        orderRepository.addOrder(rejectedOrder);
 
         OrderShipmentRequest request = new OrderShipmentRequest();
         request.setOrderId(1);
@@ -283,8 +279,8 @@ public class OrderServiceTest {
     public void shippedOrdersCannotBeShippedAgain() {
         Order initialOrder = OrderFactory.create();
         initialOrder.setId(1);
-        initialOrder.setStatus(OrderStatus.SHIPPED);
-        orderRepository.addOrder(initialOrder);
+        Order shippedOrder = initialOrder.ship();
+        orderRepository.addOrder(shippedOrder);
 
         OrderShipmentRequest request = new OrderShipmentRequest();
         request.setOrderId(1);

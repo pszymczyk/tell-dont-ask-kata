@@ -1,7 +1,6 @@
 package com.pszymczyk.telldontaskkata.service;
 
 import com.pszymczyk.telldontaskkata.entity.Order;
-import com.pszymczyk.telldontaskkata.entity.OrderStatus;
 import com.pszymczyk.telldontaskkata.repository.OrderRepository;
 import com.pszymczyk.telldontaskkata.util.ShipmentServiceUtil;
 
@@ -28,7 +27,7 @@ class ShipOrderFeature {
 
         shipmentServiceUtil.ship(order);
 
-        order.setStatus(OrderStatus.SHIPPED);
-        orderRepository.save(order);
+        Order shippedOrder = order.ship();
+        orderRepository.save(shippedOrder);
     }
 }
