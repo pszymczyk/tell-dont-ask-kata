@@ -1,10 +1,30 @@
 package com.pszymczyk.telldontaskkata.service;
 
-public interface OrderService {
+import com.pszymczyk.telldontaskkata.repository.OrderRepository;
+import com.pszymczyk.telldontaskkata.repository.ProductCatalog;
+import com.pszymczyk.telldontaskkata.util.ShipmentServiceUtil;
 
-    void approveOrder(OrderApprovalRequest request);
+public class OrderService {
 
-    void createOrder(SellItemsRequest sellItemRequest);
+    private final OrderRepository orderRepository;
+    private final ProductCatalog productCatalog;
+    private final ShipmentServiceUtil shipmentServiceUtil;
 
-    void shipOrder(OrderShipmentRequest request);
+    public OrderService(OrderRepository orderRepository, ProductCatalog productCatalog, ShipmentServiceUtil shipmentServiceUtil) {
+        this.orderRepository = orderRepository;
+        this.productCatalog = productCatalog;
+        this.shipmentServiceUtil = shipmentServiceUtil;
+    }
+
+    public void approveOrder(OrderApprovalRequest request) {
+        new ApproveOrderFeature(orderRepository).invoke(request);
+    }
+
+    public void createOrder(SellItemsRequest request) {
+        new CreateOrderFeature(productCatalog, orderRepository).invoke(request);
+    }
+
+    public void shipOrder(OrderShipmentRequest request) {
+        new ShipOrderFeature(orderRepository, shipmentServiceUtil).ship(request);
+    }
 }

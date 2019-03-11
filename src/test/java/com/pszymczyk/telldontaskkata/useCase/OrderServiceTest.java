@@ -19,7 +19,6 @@ import com.pszymczyk.telldontaskkata.service.OrderApprovalRequest;
 import com.pszymczyk.telldontaskkata.service.OrderCannotBeShippedException;
 import com.pszymczyk.telldontaskkata.service.OrderCannotBeShippedTwiceException;
 import com.pszymczyk.telldontaskkata.service.OrderService;
-import com.pszymczyk.telldontaskkata.service.OrderServiceImpl;
 import com.pszymczyk.telldontaskkata.service.OrderShipmentRequest;
 import com.pszymczyk.telldontaskkata.service.RejectedOrderCannotBeApprovedException;
 import com.pszymczyk.telldontaskkata.service.SellItemRequest;
@@ -52,7 +51,7 @@ public class OrderServiceTest {
             )
     );
     private final TestShipmentService shipmentService = new TestShipmentService();
-    private final OrderService orderService = new OrderServiceImpl(orderRepository, productCatalog, shipmentService);
+    private final OrderService orderService = new OrderService(orderRepository, productCatalog, shipmentService);
 
     @Test
     public void sellMultipleItems() {
