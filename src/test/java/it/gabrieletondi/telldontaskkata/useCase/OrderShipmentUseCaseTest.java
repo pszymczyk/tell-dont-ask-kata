@@ -1,9 +1,14 @@
 package it.gabrieletondi.telldontaskkata.useCase;
 
-import it.gabrieletondi.telldontaskkata.domain.Order;
-import it.gabrieletondi.telldontaskkata.domain.OrderStatus;
+import it.gabrieletondi.telldontaskkata.entity.Order;
+import it.gabrieletondi.telldontaskkata.entity.OrderStatus;
 import it.gabrieletondi.telldontaskkata.doubles.TestOrderRepository;
 import it.gabrieletondi.telldontaskkata.doubles.TestShipmentService;
+import it.gabrieletondi.telldontaskkata.service.OrderCannotBeShippedException;
+import it.gabrieletondi.telldontaskkata.service.OrderCannotBeShippedTwiceException;
+import it.gabrieletondi.telldontaskkata.service.OrderShipmentRequest;
+import it.gabrieletondi.telldontaskkata.service.OrderShipmentUseCase;
+
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;

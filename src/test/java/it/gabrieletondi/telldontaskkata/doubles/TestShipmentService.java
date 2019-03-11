@@ -1,6 +1,6 @@
 package it.gabrieletondi.telldontaskkata.doubles;
 
-import it.gabrieletondi.telldontaskkata.domain.Order;
+import it.gabrieletondi.telldontaskkata.entity.Order;
 import it.gabrieletondi.telldontaskkata.service.ShipmentService;
 
 public class TestShipmentService implements ShipmentService {

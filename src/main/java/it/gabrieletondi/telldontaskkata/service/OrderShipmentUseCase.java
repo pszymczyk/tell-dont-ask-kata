@@ -1,13 +1,12 @@
-package it.gabrieletondi.telldontaskkata.useCase;
+package it.gabrieletondi.telldontaskkata.service;
 
-import it.gabrieletondi.telldontaskkata.domain.Order;
-import it.gabrieletondi.telldontaskkata.domain.OrderStatus;
+import it.gabrieletondi.telldontaskkata.entity.Order;
+import it.gabrieletondi.telldontaskkata.entity.OrderStatus;
 import it.gabrieletondi.telldontaskkata.repository.OrderRepository;
-import it.gabrieletondi.telldontaskkata.service.ShipmentService;
 
-import static it.gabrieletondi.telldontaskkata.domain.OrderStatus.CREATED;
-import static it.gabrieletondi.telldontaskkata.domain.OrderStatus.REJECTED;
-import static it.gabrieletondi.telldontaskkata.domain.OrderStatus.SHIPPED;
+import static it.gabrieletondi.telldontaskkata.entity.OrderStatus.CREATED;
+import static it.gabrieletondi.telldontaskkata.entity.OrderStatus.REJECTED;
+import static it.gabrieletondi.telldontaskkata.entity.OrderStatus.SHIPPED;
 
 public class OrderShipmentUseCase {
     private final OrderRepository orderRepository;

@@ -26,3 +26,5 @@ Feedback is welcome!
 How did you find the kata? Did you learn anything from it?
 
 Please contact me on twitter [@racingDeveloper](https://twitter.com/racingDeveloper) or use the GitHub repo wiki!
+
+https://github.com/gabrieletondi/tell-dont-ask-kata
