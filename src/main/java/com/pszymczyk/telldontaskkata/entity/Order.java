@@ -32,42 +32,10 @@ public class Order {
         this.status = status;
     }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
-
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public List<OrderItem> getItems() {
-        return items;
-    }
-
-    public BigDecimal getTax() {
-        return tax;
-    }
-
-    public void setTax(BigDecimal tax) {
-        this.tax = tax;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void addItem(OrderItem orderItem) {
-        items.add(orderItem);
-        setTotal(total.add(orderItem.getTaxedAmount()));
-        setTax(tax.add(orderItem.getTax()));
+        this.items.add(orderItem);
+        this.total = total.add(orderItem.getTaxedAmount());
+        this.tax = tax.add(orderItem.getTax());
     }
 
     public boolean isShipped() {
@@ -102,6 +70,30 @@ public class Order {
 
     public Order approve() {
         return new Order(this.id, this.total, this.currency, this.items, this.tax, OrderStatus.APPROVED);
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public BigDecimal getTax() {
+        return tax;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

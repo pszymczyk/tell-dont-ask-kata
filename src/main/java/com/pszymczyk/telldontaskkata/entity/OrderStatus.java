@@ -1,5 +1,5 @@
 package com.pszymczyk.telldontaskkata.entity;
 
-public enum OrderStatus {
+enum OrderStatus {
     APPROVED, REJECTED, SHIPPED, CREATED
 }
