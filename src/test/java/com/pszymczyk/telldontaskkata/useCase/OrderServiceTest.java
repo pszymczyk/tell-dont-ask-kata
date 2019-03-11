@@ -75,7 +75,7 @@ public class OrderServiceTest {
 
         //then
         Order insertedOrder = orderRepository.getSavedOrder();
-        assertThat(insertedOrder.getStatus()).isEqualTo(OrderStatus.CREATED);
+        assertThat(insertedOrder.isCreated()).isTrue();
         assertThat(insertedOrder.getTotal()).isEqualTo(new BigDecimal("23.20"));
         assertThat(insertedOrder.getTax()).isEqualTo(new BigDecimal("2.13"));
         assertThat(insertedOrder.getCurrency()).isEqualTo("EUR");
@@ -125,7 +125,7 @@ public class OrderServiceTest {
 
         //then
         Order savedOrder = orderRepository.getSavedOrder();
-        assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.APPROVED);
+        assertThat(savedOrder.isApproved()).isTrue();
     }
 
     @Test
@@ -145,7 +145,7 @@ public class OrderServiceTest {
 
         //then
         Order savedOrder = orderRepository.getSavedOrder();
-        assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.REJECTED);
+        assertThat(savedOrder.isRejected()).isTrue();
     }
 
     @Test
@@ -239,7 +239,7 @@ public class OrderServiceTest {
         orderService.shipOrder(request);
 
         //then
-        assertThat(orderRepository.getSavedOrder().getStatus()).isEqualTo((OrderStatus.SHIPPED));
+        assertThat(orderRepository.getSavedOrder().isShipped()).isTrue();
         assertThat(shipmentService.getShippedOrder()).isEqualTo(initialOrder);
     }
 

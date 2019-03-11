@@ -5,10 +5,6 @@ import com.pszymczyk.telldontaskkata.entity.OrderStatus;
 import com.pszymczyk.telldontaskkata.repository.OrderRepository;
 import com.pszymczyk.telldontaskkata.util.ShipmentServiceUtil;
 
-import static com.pszymczyk.telldontaskkata.entity.OrderStatus.CREATED;
-import static com.pszymczyk.telldontaskkata.entity.OrderStatus.REJECTED;
-import static com.pszymczyk.telldontaskkata.entity.OrderStatus.SHIPPED;
-
 class ShipOrderFeature {
 
     private final OrderRepository orderRepository;
@@ -22,11 +18,11 @@ class ShipOrderFeature {
     void ship(OrderShipmentRequest request) {
         final Order order = orderRepository.getById(request.getOrderId());
 
-        if (order.getStatus().equals(CREATED) || order.getStatus().equals(REJECTED)) {
+        if (order.isCreated() || order.isRejected()) {
             throw new OrderCannotBeShippedException();
         }
 
-        if (order.getStatus().equals(SHIPPED)) {
+        if (order.isShipped()) {
             throw new OrderCannotBeShippedTwiceException();
         }
 

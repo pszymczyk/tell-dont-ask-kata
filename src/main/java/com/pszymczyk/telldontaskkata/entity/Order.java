@@ -31,16 +31,8 @@ public class Order {
         return currency;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
     public List<OrderItem> getItems() {
         return items;
-    }
-
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
     }
 
     public BigDecimal getTax() {
@@ -51,7 +43,7 @@ public class Order {
         this.tax = tax;
     }
 
-    public OrderStatus getStatus() {
+    private OrderStatus getStatus() {
         return status;
     }
 
@@ -71,5 +63,21 @@ public class Order {
         items.add(orderItem);
         setTotal(total.add(orderItem.getTaxedAmount()));
         setTax(tax.add(orderItem.getTax()));
+    }
+
+    public boolean isShipped() {
+        return getStatus().equals(OrderStatus.SHIPPED);
+    }
+
+    public boolean isRejected() {
+        return getStatus().equals(OrderStatus.REJECTED);
+    }
+
+    public boolean isApproved() {
+        return getStatus().equals(OrderStatus.APPROVED);
+    }
+
+    public boolean isCreated() {
+        return getStatus().equals(OrderStatus.CREATED);
     }
 }
