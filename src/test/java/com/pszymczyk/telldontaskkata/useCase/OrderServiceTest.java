@@ -3,6 +3,7 @@ package com.pszymczyk.telldontaskkata.useCase;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -113,11 +114,11 @@ public class OrderServiceTest {
         //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.CREATED);
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         orderRepository.addOrder(initialOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
         request.setApproved(true);
 
         //when
@@ -133,11 +134,11 @@ public class OrderServiceTest {
         //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.CREATED);
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         orderRepository.addOrder(initialOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
         request.setApproved(false);
 
         //when
@@ -153,11 +154,11 @@ public class OrderServiceTest {
         //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.REJECTED);
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         orderRepository.addOrder(initialOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
         request.setApproved(true);
 
         //when
@@ -172,11 +173,11 @@ public class OrderServiceTest {
         //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.APPROVED);
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         orderRepository.addOrder(initialOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
         request.setApproved(false);
 
         //when
@@ -191,11 +192,11 @@ public class OrderServiceTest {
         //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.SHIPPED);
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         orderRepository.addOrder(initialOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
         request.setApproved(true);
 
         //when
@@ -210,11 +211,11 @@ public class OrderServiceTest {
         //given
         Order initialOrder = new Order();
         initialOrder.setStatus(OrderStatus.SHIPPED);
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         orderRepository.addOrder(initialOrder);
 
         OrderApprovalRequest request = new OrderApprovalRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
         request.setApproved(false);
 
         //when
@@ -228,12 +229,12 @@ public class OrderServiceTest {
     public void shipApprovedOrder() {
         //given
         Order initialOrder = new Order();
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         initialOrder.setStatus(OrderStatus.APPROVED);
         orderRepository.addOrder(initialOrder);
 
         OrderShipmentRequest request = new OrderShipmentRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
 
         //when
         orderService.shipOrder(request);
@@ -247,12 +248,12 @@ public class OrderServiceTest {
     public void createdOrdersCannotBeShipped() {
         //given
         Order initialOrder = new Order();
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         initialOrder.setStatus(OrderStatus.CREATED);
         orderRepository.addOrder(initialOrder);
 
         OrderShipmentRequest request = new OrderShipmentRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
 
         //when
         Throwable thrown = catchThrowable(() -> orderService.shipOrder(request));
@@ -265,12 +266,12 @@ public class OrderServiceTest {
     public void rejectedOrdersCannotBeShipped() {
         //given
         Order initialOrder = new Order();
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         initialOrder.setStatus(OrderStatus.REJECTED);
         orderRepository.addOrder(initialOrder);
 
         OrderShipmentRequest request = new OrderShipmentRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
 
         //when
         Throwable thrown = catchThrowable(() -> orderService.shipOrder(request));
@@ -282,12 +283,12 @@ public class OrderServiceTest {
     @Test
     public void shippedOrdersCannotBeShippedAgain() {
         Order initialOrder = new Order();
-        initialOrder.setId(1);
+        initialOrder.setId(UUID.randomUUID());
         initialOrder.setStatus(OrderStatus.SHIPPED);
         orderRepository.addOrder(initialOrder);
 
         OrderShipmentRequest request = new OrderShipmentRequest();
-        request.setOrderId(1);
+        request.setOrderId(initialOrder.getId());
 
         //when
         Throwable thrown = catchThrowable(() -> orderService.shipOrder(request));

@@ -2,6 +2,7 @@ package com.pszymczyk.telldontaskkata.entity;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public class Order {
     private BigDecimal total;
@@ -9,7 +10,7 @@ public class Order {
     private List<OrderItem> items;
     private BigDecimal tax;
     private OrderStatus status;
-    private int id;
+    private UUID id;
 
     public BigDecimal getTotal() {
         return total;
@@ -51,11 +52,11 @@ public class Order {
         this.status = status;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 }

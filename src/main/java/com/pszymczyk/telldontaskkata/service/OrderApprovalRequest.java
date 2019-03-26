@@ -1,14 +1,16 @@
 package com.pszymczyk.telldontaskkata.service;
 
+import java.util.UUID;
+
 public class OrderApprovalRequest {
-    private int orderId;
+    private UUID orderId;
     private boolean approved;
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(UUID orderId) {
         this.orderId = orderId;
     }
 
-    public int getOrderId() {
+    public UUID getOrderId() {
         return orderId;
     }
 

@@ -5,6 +5,7 @@ import com.pszymczyk.telldontaskkata.repository.OrderRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TestOrderRepository implements OrderRepository {
     private Order insertedOrder;
@@ -19,7 +20,7 @@ public class TestOrderRepository implements OrderRepository {
     }
 
     @Override
-    public Order getById(int orderId) {
+    public Order getById(UUID orderId) {
         return orders.stream().filter(o -> o.getId() == orderId).findFirst().get();
     }
 

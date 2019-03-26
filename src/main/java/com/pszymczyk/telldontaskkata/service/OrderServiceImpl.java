@@ -2,6 +2,7 @@ package com.pszymczyk.telldontaskkata.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.pszymczyk.telldontaskkata.entity.Order;
 import com.pszymczyk.telldontaskkata.entity.OrderItem;
@@ -52,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void createOrder(SellItemsRequest request) {
         Order order = new Order();
+        order.setId(UUID.randomUUID());
         order.setStatus(OrderStatus.CREATED);
         order.setItems(new ArrayList<>());
         order.setCurrency("EUR");

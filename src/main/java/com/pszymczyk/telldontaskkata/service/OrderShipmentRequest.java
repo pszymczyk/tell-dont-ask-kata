@@ -1,13 +1,15 @@
 package com.pszymczyk.telldontaskkata.service;
 
-public class OrderShipmentRequest {
-    private int orderId;
+import java.util.UUID;
 
-    public void setOrderId(int orderId) {
+public class OrderShipmentRequest {
+    private UUID orderId;
+
+    public void setOrderId(UUID orderId) {
         this.orderId = orderId;
     }
 
-    public int getOrderId() {
+    public UUID getOrderId() {
         return orderId;
     }
 }
